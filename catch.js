@@ -390,7 +390,12 @@
       couponShown = true;
       $('btnSkip').hidden = true;
       $('showMsg').style.opacity = 0;
-      const cp = save.coupon;
+      const saved = save.coupon;
+      // 설정에 날짜가 있으면 발행일·번호를 그 날짜로 (예: 생일 파티 날)
+      const fixed = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(CFG.couponDate || '');
+      const cp = saved && fixed
+        ? { ...saved, y: +fixed[1], m: +fixed[2], d: +fixed[3], no: `${fixed[2].padStart(2, '0')}${fixed[3].padStart(2, '0')}-01` }
+        : saved;
       $('cpTitle').textContent = CFG.couponTitle || '떡볶이 사주기';
       $('cpSub').textContent = `${name} 전용 · 1회 사용`;
       $('cpFrom').textContent = CFG.fromName || '준우';
