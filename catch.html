@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#cfe8ff">
+  <title>🎁 선물 받기</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Black+Han+Sans&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="catch.css">
+</head>
+<body class="catch">
+  <canvas id="ccv"></canvas>
+
+  <div id="ctop">
+    <button id="btnSound" class="icon-btn" aria-label="소리 켜기/끄기">🔊</button>
+    <div class="c-center">
+      <div id="cscore">0</div>
+      <div id="cgoal">목표 50점 🎟️</div>
+    </div>
+    <div class="c-right">
+      <div id="hearts">❤️❤️❤️</div>
+      <button id="btnPause" class="icon-btn" aria-label="일시정지">⏸</button>
+    </div>
+  </div>
+  <div id="chint">👆 좌우로 끌어서 선물을 받아!</div>
+
+  <!-- 시작 -->
+  <div id="ovIntro" class="overlay">
+    <div class="card intro">
+      <div class="jicon float">🎁</div>
+      <h1>선물 받기</h1>
+      <p class="goal"><b id="goalN">50</b>점 넘기면 <b>깜짝 선물</b> 🎆</p>
+      <ul class="rules">
+        <li><span>👆</span><div>화면을 좌우로 끌어서 움직여</div></li>
+        <li><span>🎁</span><div>선물·케이크·풍선은 <b>+1</b>, ⭐은 <b>+3</b></div></li>
+        <li><span>🥦</span><div>브로콜리 받으면 ❤️ 하나 잃어</div></li>
+        <li><span>💥</span><div>❤️ 3개 다 잃으면 끝</div></li>
+      </ul>
+      <button id="btnStart" class="btn primary">시작하기</button>
+      <p id="introRecord" class="hint" hidden></p>
+      <button id="btnCouponIntro" class="btn" hidden>🎟️ 내 쿠폰 보기</button>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <!-- 일시정지 -->
+  <div id="ovPause" class="overlay" hidden>
+    <div class="card">
+      <h2>⏸ 잠깐 멈춤</h2>
+      <button id="btnResume" class="btn primary">계속 하기</button>
+      <button id="btnQuit" class="btn">처음부터</button>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <!-- 결과 -->
+  <div id="ovOver" class="overlay" hidden>
+    <div class="card result">
+      <h2 id="resTitle">끝!</h2>
+      <div id="resMain" class="big-score">0</div>
+      <div id="resLabel" class="res-label">점</div>
+      <div id="resBadge" class="badge" hidden>🏆 최고 기록!</div>
+      <p id="resSub" class="sub"></p>
+      <button id="btnRetry" class="btn primary">한 판 더</button>
+      <button id="btnCouponAgain" class="btn" hidden>🎟️ 내 쿠폰 보기</button>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <!-- 🎆 불꽃놀이 + 🎟️ 쿠폰 -->
+  <div id="ovShow" hidden>
+    <canvas id="fw"></canvas>
+    <div id="showMsg"></div>
+    <div id="couponWrap" hidden>
+      <div class="coupon-intro">🎁 선물 도착!</div>
+      <div id="coupon" class="coupon">
+        <div class="cp-main">
+          <div class="cp-kicker">SPECIAL COUPON</div>
+          <div class="cp-food">🌶️🍢</div>
+          <div class="cp-title" id="cpTitle">떡볶이 사주기</div>
+          <div class="cp-sub" id="cpSub">수호 전용 · 1회 사용</div>
+          <dl class="cp-meta">
+            <div><dt>발행</dt><dd id="cpFrom">준우</dd></div>
+            <div><dt>발행일</dt><dd id="cpDate"></dd></div>
+            <div><dt>유효기간</dt><dd>평생 ♾️</dd></div>
+          </dl>
+        </div>
+        <div class="cp-stub">
+          <div class="cp-no" id="cpNo">No.0001</div>
+          <div class="barcode"></div>
+          <div class="cp-free">FREE</div>
+        </div>
+        <div class="cp-used" id="cpUsed" hidden>사용 완료</div>
+      </div>
+      <p class="cp-note" id="cpNote"></p>
+      <button id="btnCouponDone" class="btn primary">쿠폰 받기 🎟️</button>
+      <button id="btnCouponUse" class="link-btn">✅ 사용 완료 처리 (준우가 누르기)</button>
+    </div>
+    <button id="btnSkip" class="skip">건너뛰기 ›</button>
+  </div>
+
+  <div id="toast" hidden></div>
+  <canvas id="confetti"></canvas>
+
+  <script src="config.js"></script>
+  <script src="common.js"></script>
+  <script src="catch.js"></script>
+</body>
+</html>

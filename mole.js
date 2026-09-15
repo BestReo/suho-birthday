@@ -263,10 +263,12 @@
 
     function build() {
       candlesEl.innerHTML = '';
+      candlesEl.style.gap = CANDLES > 8 ? '2.5%' : '4%';
       for (let i = 0; i < CANDLES; i++) {
         const c = document.createElement('div');
         c.className = 'candle';
         c.style.height = (44 + ((i * 7) % 3) * 6) + 'px';
+        if (CANDLES > 8) c.style.width = '11px';
         c.innerHTML = '<div class="wick"></div><div class="flame"></div><div class="smoke"></div>';
         c.addEventListener('pointerdown', (e) => { e.preventDefault(); blow(c); });
         candlesEl.appendChild(c);

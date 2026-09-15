@@ -19,6 +19,15 @@
   if (j.best) $('recJump').textContent = `🏆 최고 ${j.best}계단`;
   const mo = read('bdayMole_v1');
   if (mo.best) $('recMole').textContent = `🏆 최고 ${mo.best}마리`;
+  const st = read('bdayStack_v1');
+  if (st.cert) $('recStack').textContent = `🎖️ 상장 받음 · 최고 ${st.best}층`;
+  else if (st.best) $('recStack').textContent = `🏆 최고 ${st.best}층`;
+  const ca = read('bdayCatch_v1');
+  if (ca.coupon) $('recCatch').textContent = ca.coupon.used ? `🎟️ 쿠폰 사용함 · 최고 ${ca.best}점` : `🎟️ 떡볶이 쿠폰 있음! · 최고 ${ca.best}점`;
+  else if (ca.best) $('recCatch').textContent = `🏆 최고 ${ca.best}점`;
+  const setDesc = (href, text) => { const p = document.querySelector(`a[href="${href}"] p`); if (p) p.textContent = text; };
+  if (CFG.stackTarget) setDesc('stack.html', `${CFG.stackTarget}층 쌓으면 진짜 상장을 줄게 🎖️`);
+  if (CFG.catchTarget) setDesc('catch.html', `${CFG.catchTarget}점 넘기면 불꽃놀이 + 비밀 쿠폰 🎆`);
   const moleCard = document.querySelector('a[href="mole.html"] p');
   if (moleCard && CFG.moleTarget) moleCard.textContent = `1분 안에 ${name} ${CFG.moleTarget}마리 잡으면 깜짝 선물 🎂`;
 

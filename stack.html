@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#ffe3ea">
+  <title>🎂 케이크 쌓기</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="stack.css">
+</head>
+<body class="stack">
+  <canvas id="scv"></canvas>
+
+  <div id="stop">
+    <button id="btnSound" class="icon-btn" aria-label="소리 켜기/끄기">🔊</button>
+    <div class="s-center">
+      <div id="sscore">0</div>
+      <div id="sgoal">목표 20층 🎖️</div>
+    </div>
+    <button id="btnPause" class="icon-btn" aria-label="일시정지">⏸</button>
+  </div>
+  <div id="shint">화면을 탭해서 쌓아!</div>
+
+  <!-- 시작 -->
+  <div id="ovIntro" class="overlay">
+    <div class="card intro">
+      <div class="jicon float">🎂</div>
+      <h1>케이크 쌓기</h1>
+      <p class="goal"><b id="goalN">20</b>층 쌓으면 <b>상장</b>을 줄게 🎖️</p>
+      <ul class="rules">
+        <li><span>👆</span><div>움직이는 케이크를 <b>탭</b>해서 쌓아</div></li>
+        <li><span>✂️</span><div>삐져나간 부분은 잘려나가</div></li>
+        <li><span>✨</span><div>딱 맞추면 <b>PERFECT!</b><br>3번 연속이면 다시 넓어져</div></li>
+        <li><span>💥</span><div>완전히 빗나가면 끝</div></li>
+      </ul>
+      <button id="btnStart" class="btn primary">시작하기</button>
+      <p id="introRecord" class="hint" hidden></p>
+      <button id="btnCertIntro" class="btn" hidden>🎖️ 내 상장 보기</button>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <!-- 일시정지 -->
+  <div id="ovPause" class="overlay" hidden>
+    <div class="card">
+      <h2>⏸ 잠깐 멈춤</h2>
+      <button id="btnResume" class="btn primary">계속 하기</button>
+      <button id="btnQuit" class="btn">처음부터</button>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <!-- 결과 -->
+  <div id="ovOver" class="overlay" hidden>
+    <div class="card result">
+      <h2 id="resTitle">와르르!</h2>
+      <div id="resMain" class="big-score">0</div>
+      <div id="resLabel" class="res-label">층</div>
+      <div id="resBadge" class="badge" hidden>🏆 최고 기록!</div>
+      <p id="resSub" class="sub"></p>
+      <button id="btnRetry" class="btn primary">한 번 더</button>
+      <button id="btnCertAgain" class="btn" hidden>🎖️ 내 상장 보기</button>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <!-- 🎖️ 상장 -->
+  <div id="ovCert" hidden>
+    <div class="cert-stage">
+      <div id="cert" class="cert">
+        <div class="cert-frame">
+          <span class="corner tl"></span><span class="corner tr"></span>
+          <span class="corner bl"></span><span class="corner br"></span>
+          <div class="cert-no" id="certNo"></div>
+          <div class="cert-title">상&nbsp;&nbsp;장</div>
+          <div class="cert-award" id="certAward"></div>
+          <div class="cert-person">
+            <div class="cert-photo"><img id="certPhoto" alt=""></div>
+            <div class="cert-who">
+              <div><span class="lbl">성&nbsp;&nbsp;&nbsp;명</span><b id="certName"></b></div>
+              <div><span class="lbl">기&nbsp;&nbsp;&nbsp;록</span><b id="certRecord"></b></div>
+            </div>
+          </div>
+          <p class="cert-body" id="certBody"></p>
+          <div class="cert-date" id="certDate"></div>
+          <div class="cert-issuer">
+            <div id="certIssuer"></div>
+            <div class="cert-boss">위원장 <b id="certFrom"></b></div>
+            <div class="seal" id="certSeal"></div>
+          </div>
+          <div class="rosette"><span>BEST</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="cert-tip">📸 캡처해서 자랑해!</p>
+    <button id="btnCertDone" class="btn primary">확인</button>
+  </div>
+
+  <div id="toast" hidden></div>
+  <canvas id="confetti"></canvas>
+
+  <script src="config.js"></script>
+  <script src="common.js"></script>
+  <script src="stack.js"></script>
+</body>
+</html>
