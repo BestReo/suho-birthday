@@ -35,7 +35,8 @@
     rows[k] = { col, tapped: false, t: 0 };
   }
   const rowTop = (k) => vh - TH * 1.35 - k * TH + scroll;
-  const speed = () => Math.min(7.5, 2.3 + score * 0.018 + songs * 0.25);   // 초당 줄 수
+  // 초당 줄 수: 금상(100타일)까지는 천천히 빨라지고, 그 뒤로는 확 빨라짐
+  const speed = () => Math.min(7.5, 2.3 + Math.min(score, 100) * 0.009 + songs * 0.12 + Math.max(0, score - 100) * 0.02);
 
   function newGame() {
     rows = []; for (let k = 0; k < 30; k++) genRow(k);
