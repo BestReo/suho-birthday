@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#b9e6a1">
+  <title>🔨 수호 두더지 잡기</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="mole.css">
+</head>
+<body class="mole">
+  <div id="mapp">
+    <header id="mtop">
+      <button id="btnSound" class="icon-btn" aria-label="소리 켜기/끄기">🔊</button>
+      <div class="mtime-wrap">
+        <div id="mtime">60</div>
+        <div class="mtime-label">초</div>
+      </div>
+      <button id="btnPause" class="icon-btn" aria-label="일시정지">⏸</button>
+    </header>
+
+    <div id="mprog">
+      <div id="mprogFill"></div>
+      <div id="mprogText"><b id="mscore">0</b> / <span id="mtarget">45</span>마리</div>
+    </div>
+
+    <main id="field"></main>
+  </div>
+
+  <div id="countdown" hidden></div>
+
+  <!-- 시작 -->
+  <div id="ovIntro" class="overlay">
+    <div class="card intro">
+      <div class="jicon float">🔨</div>
+      <h1>수호 두더지 잡기</h1>
+      <p class="goal"><b id="goalTime">1분</b> 안에 수호 <b id="goalN">45</b>마리 잡기!</p>
+      <ul class="rules">
+        <li><span>👆</span><div>튀어나온 수호를 톡!</div></li>
+        <li><span>👑</span><div>금색 수호는 <b>+3</b>마리</div></li>
+        <li><span>🥦</span><div>브로콜리는 누르면 <b>-1</b></div></li>
+        <li><span>🎂</span><div>성공하면 깜짝 선물이 있어</div></li>
+      </ul>
+      <button id="btnStart" class="btn primary">시작하기</button>
+      <p id="introRecord" class="hint" hidden></p>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <!-- 일시정지 -->
+  <div id="ovPause" class="overlay" hidden>
+    <div class="card">
+      <h2>⏸ 잠깐 멈춤</h2>
+      <button id="btnResume" class="btn primary">계속 하기</button>
+      <button id="btnQuit" class="btn">처음부터</button>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <!-- 결과 -->
+  <div id="ovOver" class="overlay" hidden>
+    <div class="card result">
+      <h2 id="resTitle">시간 끝!</h2>
+      <div id="resMain" class="big-score">0</div>
+      <div id="resLabel" class="res-label">마리</div>
+      <div id="resBadge" class="badge" hidden>🏆 최고 기록!</div>
+      <p id="resSub" class="sub"></p>
+      <button id="btnRetry" class="btn primary">한 판 더</button>
+      <button id="btnPartyAgain" class="btn" hidden>🎂 케이크 다시 보기</button>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <!-- 🎂 성공 보상: 케이크 + 카운트다운 + 노래 + 촛불 끄기 -->
+  <div id="ovParty" hidden>
+    <div id="partyGlow"></div>
+    <div id="partyTop">
+      <div id="partyTitle">🎉 성공!</div>
+      <div id="partyCount"></div>
+      <div id="partyMsg"></div>
+    </div>
+    <div id="cake">
+      <div id="candles"></div>
+      <div class="tier top"><div class="drip"></div></div>
+      <div class="tier bottom">
+        <div class="drip"></div>
+        <img id="cakeFace" alt="">
+      </div>
+      <div class="plate"></div>
+    </div>
+    <div id="notes" aria-hidden="true"></div>
+    <div id="partyEnd" hidden>
+      <div id="partyBig"></div>
+      <div id="partyFrom">from. 준우</div>
+      <button id="btnPartyDone" class="btn primary">결과 보기</button>
+    </div>
+  </div>
+
+  <div id="toast" hidden></div>
+  <canvas id="confetti"></canvas>
+
+  <script src="config.js"></script>
+  <script src="mole.js"></script>
+</body>
+</html>

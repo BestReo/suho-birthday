@@ -17,6 +17,10 @@
   if (m.bestTime) $('recMerge').textContent = `⚡ 최단 기록 ${fmt(m.bestTime)}`;
   else if (m.best) $('recMerge').textContent = `🏆 최고 ${m.best}점`;
   if (j.best) $('recJump').textContent = `🏆 최고 ${j.best}계단`;
+  const mo = read('bdayMole_v1');
+  if (mo.best) $('recMole').textContent = `🏆 최고 ${mo.best}마리`;
+  const moleCard = document.querySelector('a[href="mole.html"] p');
+  if (moleCard && CFG.moleTarget) moleCard.textContent = `1분 안에 ${name} ${CFG.moleTarget}마리 잡으면 깜짝 선물 🎂`;
 
   // ---------- 상자 열기 ----------
   const box = $('giftBox');
