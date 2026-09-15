@@ -1,0 +1,45 @@
+body.bricks { background: #2b2240; }
+#bcv { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+
+#btop {
+  position: fixed; left: 0; right: 0; z-index: 2;
+  top: max(8px, env(safe-area-inset-top));
+  padding: 0 10px;
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: start;
+  pointer-events: none;
+}
+#btop .icon-btn { pointer-events: auto; }
+.b-center { text-align: center; line-height: 1.1; }
+#bstage { font-size: 28px; color: #fff; text-shadow: 0 2px 0 rgba(0,0,0,.3); }
+#bgoal { display: inline-block; margin-top: 4px; font-size: 14px; color: #fff; background: rgba(255,255,255,.16); border-radius: 99px; padding: 3px 10px; }
+#bgoal.done { background: #ffd43b; color: #6b4b00; }
+.b-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+#hearts { font-size: 18px; letter-spacing: 1px; }
+#hearts.hurt { animation: shakeX .35s linear; }
+#bhint {
+  position: fixed; left: 50%; bottom: 150px; transform: translateX(-50%);
+  font-size: 16px; color: #fff; background: rgba(0,0,0,.35);
+  padding: 8px 16px; border-radius: 99px; white-space: nowrap;
+  pointer-events: none; z-index: 2;
+}
+@keyframes shakeX { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+/* ---------- 사진 공개 ---------- */
+#ovReveal {
+  position: fixed; inset: 0; z-index: 20;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  padding: 20px;
+  background: radial-gradient(ellipse at 50% 40%, rgba(80,60,120,.92), rgba(20,14,32,.97));
+  animation: fade .4s ease;
+}
+.rv-frame {
+  background: #fff; padding: 10px 10px 12px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.5);
+  transform: rotate(-2deg);
+  animation: rvPop .6s cubic-bezier(.2,1.4,.4,1);
+}
+.rv-frame img { display: block; max-width: min(78vw, 440px); max-height: 56dvh; object-fit: contain; }
+#rvCap { font-size: 24px; color: #fff; text-align: center; }
+#rvCount { font-size: 15px; color: #d0bfff; }
+#ovReveal .btn { width: min(80vw, 300px); margin-top: 0; }
+@keyframes rvPop { from { transform: rotate(-12deg) scale(.6); opacity: 0; } }

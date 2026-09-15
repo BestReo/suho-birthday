@@ -25,6 +25,13 @@
   const ca = read('bdayCatch_v1');
   if (ca.coupon) $('recCatch').textContent = ca.coupon.used ? `🎟️ 쿠폰 사용함 · 최고 ${ca.best}점` : `🎟️ 떡볶이 쿠폰 있음! · 최고 ${ca.best}점`;
   else if (ca.best) $('recCatch').textContent = `🏆 최고 ${ca.best}점`;
+  const br = read('bdayBricks_v1');
+  if (br.film) $('recBricks').textContent = `🎬 영상 받음 · 사진 ${(br.revealed || []).length}장 모음`;
+  else if (br.best) $('recBricks').textContent = `🏆 최고 ${br.best}장`;
+  const pi = read('bdayPiano_v1');
+  const medals = { bronze: '🥉', silver: '🥈', gold: '🥇' };
+  if (pi.trophies && pi.trophies.length) $('recPiano').textContent = `${pi.trophies.map((k) => medals[k] || '🏆').join('')} · 최고 ${pi.best}타일`;
+  else if (pi.best) $('recPiano').textContent = `🏆 최고 ${pi.best}타일`;
   const setDesc = (href, text) => { const p = document.querySelector(`a[href="${href}"] p`); if (p) p.textContent = text; };
   if (CFG.stackTarget) setDesc('stack.html', `${CFG.stackTarget}층 쌓으면 진짜 상장을 줄게 🎖️`);
   if (CFG.catchTarget) setDesc('catch.html', `${CFG.catchTarget}점 넘기면 불꽃놀이 + 비밀 쿠폰 🎆`);

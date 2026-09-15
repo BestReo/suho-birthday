@@ -1,0 +1,139 @@
+body.piano { background: #1c1b2e; }
+#pcv { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+
+#ptop {
+  position: fixed; left: 0; right: 0; z-index: 2;
+  top: max(8px, env(safe-area-inset-top));
+  padding: 0 10px;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  pointer-events: none;
+}
+#ptop .icon-btn { pointer-events: auto; background: rgba(255,255,255,.85); }
+.p-center { text-align: center; line-height: 1; }
+#pscore {
+  font-size: 60px; color: #ff4d6d;
+  text-shadow: 0 3px 0 #fff, 0 0 14px rgba(255,255,255,.8);
+  font-variant-numeric: tabular-nums;
+}
+#pscore.pop { animation: spop .15s ease; }
+#pnext { font-size: 14px; color: #fff; margin-top: 6px; background: rgba(28,27,46,.75); padding: 3px 10px; border-radius: 99px; display: inline-block; }
+#pnext:empty { display: none; }
+@keyframes spop { 50% { transform: scale(1.15); } }
+
+/* ---------- 트로피 공통 ---------- */
+.trophy {
+  --m1: #fff3b0; --m2: #f5c542; --m3: #b8860b; --m4: #7a5a00;
+  position: relative;
+  width: 160px; height: 230px;
+  display: flex; flex-direction: column; align-items: center;
+}
+.trophy.silver { --m1: #ffffff; --m2: #d9dee5; --m3: #8e99a8; --m4: #56606e; }
+.trophy.bronze { --m1: #ffd9b3; --m2: #e0955a; --m3: #a0582a; --m4: #5e3214; }
+.trophy .cup {
+  position: relative;
+  width: 110px; height: 100px;
+  border-radius: 8px 8px 55px 55px / 8px 8px 80px 80px;
+  background: linear-gradient(100deg, var(--m3) 0%, var(--m2) 22%, var(--m1) 38%, var(--m2) 55%, var(--m3) 85%, var(--m4) 100%);
+  box-shadow: inset 0 8px 0 rgba(255,255,255,.35), inset 0 -10px 18px rgba(0,0,0,.25);
+  overflow: hidden;
+  z-index: 1;
+}
+.trophy .cup::before {       /* 컵 윗부분 테두리 */
+  content: ''; position: absolute; left: -4px; right: -4px; top: -3px; height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, var(--m3), var(--m1), var(--m3));
+}
+.trophy .star {
+  position: absolute; left: 50%; top: 52%; transform: translate(-50%, -50%);
+  font-size: 40px; color: var(--m1); text-shadow: 0 2px 0 var(--m4), 0 0 8px rgba(255,255,255,.6);
+}
+.trophy .shine {
+  position: absolute; top: -20%; left: -60%; width: 40%; height: 140%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.75), transparent);
+  transform: rotate(20deg);
+  animation: shineMove 2.6s ease-in-out infinite;
+}
+.trophy .handle {
+  position: absolute; top: 12px; width: 44px; height: 58px;
+  border: 9px solid var(--m2); border-radius: 50%;
+  box-shadow: inset 0 0 0 2px rgba(0,0,0,.08);
+}
+.trophy .handle.l { left: -2px; border-right-color: transparent; transform: rotate(-12deg); }
+.trophy .handle.r { right: -2px; border-left-color: transparent; transform: rotate(12deg); }
+.trophy .stem {
+  width: 26px; height: 34px; margin-top: -4px;
+  background: linear-gradient(90deg, var(--m3), var(--m1), var(--m3));
+  clip-path: polygon(20% 0, 80% 0, 100% 100%, 0 100%);
+}
+.trophy .base {
+  width: 130px; height: 88px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #4a3226, #2c1b13);
+  box-shadow: inset 0 4px 0 rgba(255,255,255,.12), 0 10px 20px rgba(0,0,0,.4);
+  display: grid; place-items: center;
+}
+.trophy .plate {
+  width: 106px; padding: 5px 4px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, var(--m1), var(--m2) 60%, var(--m3));
+  color: var(--m4);
+  font-family: 'Nanum Myeongjo', serif; text-align: center; line-height: 1.25;
+}
+.pl-1 { font-size: 9px; font-weight: 700; }
+.pl-2 { font-size: 15px; font-weight: 800; letter-spacing: .15em; }
+.pl-3 { font-size: 12px; font-weight: 800; letter-spacing: .2em; }
+.pl-4 { font-size: 8px; font-weight: 700; }
+
+/* ---------- 🏆 시상식 ---------- */
+#ovTrophy {
+  position: fixed; inset: 0; z-index: 30;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+  padding: 20px;
+  background: radial-gradient(ellipse at 50% 0%, #3b2d63 0%, #120f22 70%);
+  overflow: hidden;
+  animation: fade .5s ease;
+}
+.spot {
+  position: absolute; left: 50%; top: -10%; width: 520px; height: 110%;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, rgba(255,240,200,.35), rgba(255,240,200,0) 85%);
+  clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
+  pointer-events: none;
+  animation: spotOn 1.2s ease;
+}
+.rays {
+  position: absolute; left: 50%; top: 52%; width: 700px; height: 700px;
+  transform: translate(-50%, -50%);
+  background: repeating-conic-gradient(rgba(255,230,150,.10) 0 8deg, transparent 8deg 20deg);
+  border-radius: 50%;
+  -webkit-mask: radial-gradient(circle, #000 20%, transparent 65%);
+          mask: radial-gradient(circle, #000 20%, transparent 65%);
+  animation: spin 18s linear infinite;
+  pointer-events: none;
+}
+.tr-title { position: relative; font-size: 38px; color: #ffd43b; text-shadow: 0 3px 0 rgba(0,0,0,.4), 0 0 20px rgba(255,212,59,.5); animation: pop .5s .9s both cubic-bezier(.2,1.4,.4,1); }
+.trophy-stage { position: relative; transform: scale(1.35); margin: 40px 0 34px; }
+#bigTrophy { animation: rise 1.1s cubic-bezier(.2,1.2,.4,1); }
+.tr-sub { position: relative; font-size: 17px; color: #e5dbff; text-align: center; animation: fade 1s 1.2s both; }
+#ovTrophy .btn { position: relative; width: min(80vw, 300px); margin-top: 0; animation: fade 1s 1.5s both; }
+
+/* ---------- 진열장 ---------- */
+.cabinet {
+  display: flex; justify-content: center; align-items: flex-end; gap: 10px;
+  margin: 6px 0 4px; padding: 12px 10px 0;
+  background: linear-gradient(180deg, #fff8ec, #f5e6cc);
+  border-radius: 14px;
+  border-bottom: 10px solid #b08050;
+  box-shadow: inset 0 -2px 0 rgba(0,0,0,.08);
+}
+.cabinet:empty { display: none; }
+.cab-slot { display: flex; flex-direction: column; align-items: center; width: 76px; }
+.cab-slot .trophy { transform: scale(.36); transform-origin: 50% 100%; margin: -145px 0 0; }
+.cab-slot.locked .trophy { filter: grayscale(1) brightness(.5) opacity(.35); }
+.cab-slot .lbl { font-size: 12px; color: var(--ink-soft); margin: 2px 0 6px; }
+.cab-slot:not(.locked) .lbl { color: var(--ink); }
+
+@keyframes shineMove { 0%, 60% { left: -60%; } 100% { left: 130%; } }
+@keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+@keyframes rise { from { transform: translateY(120px) scale(.6); opacity: 0; } }
+@keyframes spotOn { from { opacity: 0; } }

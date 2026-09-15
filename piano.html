@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#1c1b2e">
+  <title>🎹 생일 피아노 타일</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Myeongjo:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="piano.css">
+</head>
+<body class="piano">
+  <canvas id="pcv"></canvas>
+
+  <div id="ptop">
+    <button id="btnSound" class="icon-btn" aria-label="소리 켜기/끄기">🔊</button>
+    <div class="p-center">
+      <div id="pscore">0</div>
+      <div id="pnext"></div>
+    </div>
+    <button id="btnPause" class="icon-btn" aria-label="일시정지">⏸</button>
+  </div>
+
+  <!-- 시작 -->
+  <div id="ovIntro" class="overlay">
+    <div class="card intro">
+      <div class="jicon float">🎹</div>
+      <h1>생일 피아노 타일</h1>
+      <p class="goal">검은 타일을 누르면<br><b>생일 축하 노래</b>가 연주돼 🎵</p>
+      <ul class="rules">
+        <li><span>👆</span><div>내려오는 <b>검은 타일</b>만 톡!</div></li>
+        <li><span>⬜</span><div>흰 칸 누르거나 놓치면 끝</div></li>
+        <li><span>🏆</span><div><b id="ruleTrophy">25·50·100</b>타일마다 트로피!</div></li>
+      </ul>
+      <div id="cabinet" class="cabinet"></div>
+      <button id="btnStart" class="btn primary">시작하기</button>
+      <p id="introRecord" class="hint" hidden></p>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <!-- 일시정지 -->
+  <div id="ovPause" class="overlay" hidden>
+    <div class="card">
+      <h2>⏸ 잠깐 멈춤</h2>
+      <button id="btnResume" class="btn primary">계속 하기</button>
+      <button id="btnQuit" class="btn">처음부터</button>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <!-- 결과 -->
+  <div id="ovOver" class="overlay" hidden>
+    <div class="card result">
+      <h2 id="resTitle">삐빅!</h2>
+      <div id="resMain" class="big-score">0</div>
+      <div id="resLabel" class="res-label">타일</div>
+      <div id="resBadge" class="badge" hidden>🏆 최고 기록!</div>
+      <p id="resSub" class="sub"></p>
+      <div id="cabinet2" class="cabinet"></div>
+      <button id="btnRetry" class="btn primary">한 번 더</button>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <!-- 🏆 시상식 -->
+  <div id="ovTrophy" hidden>
+    <div class="spot"></div>
+    <div class="rays"></div>
+    <div class="tr-title" id="trTitle">🎉 금상 수상!</div>
+    <div class="trophy-stage">
+      <div id="bigTrophy" class="trophy gold">
+        <div class="cup"><span class="shine"></span><span class="star">★</span></div>
+        <div class="handle l"></div><div class="handle r"></div>
+        <div class="stem"></div>
+        <div class="base">
+          <div class="plate">
+            <div class="pl-1">생일 피아노 대회</div>
+            <div class="pl-2" id="plRank">금 상</div>
+            <div class="pl-3" id="plName">수 호</div>
+            <div class="pl-4" id="plDate">2026. 9. 19</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tr-sub" id="trSub"></div>
+    <button id="btnTrophyDone" class="btn primary">진열장에 넣기 🏆</button>
+  </div>
+
+  <div id="toast" hidden></div>
+  <canvas id="confetti"></canvas>
+
+  <script src="config.js"></script>
+  <script src="common.js"></script>
+  <script src="piano.js"></script>
+</body>
+</html>

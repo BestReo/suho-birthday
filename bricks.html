@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#2b2240">
+  <title>🧱 수호 벽돌깨기</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Myeongjo:wght@400;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="bricks.css">
+  <link rel="stylesheet" href="film.css">
+</head>
+<body class="bricks">
+  <canvas id="bcv"></canvas>
+
+  <div id="btop">
+    <button id="btnSound" class="icon-btn" aria-label="소리 켜기/끄기">🔊</button>
+    <div class="b-center">
+      <div id="bstage">사진 1</div>
+      <div id="bgoal">🎬 영상까지 3장</div>
+    </div>
+    <div class="b-right">
+      <div id="hearts">❤️❤️❤️</div>
+      <button id="btnPause" class="icon-btn" aria-label="일시정지">⏸</button>
+    </div>
+  </div>
+  <div id="bhint">👆 탭해서 공 발사! 좌우로 끌어서 받아</div>
+
+  <!-- 시작 -->
+  <div id="ovIntro" class="overlay">
+    <div class="card intro">
+      <div class="jicon float">🧱</div>
+      <h1>수호 벽돌깨기</h1>
+      <p class="goal">벽돌 뒤에 <b>수호 사진</b>이 숨어있어!<br>한 판에 <b id="goalN">3</b>장 공개하면 <b>🎬 선물 영상</b></p>
+      <ul class="rules">
+        <li><span>👆</span><div>좌우로 끌어서 판을 움직여</div></li>
+        <li><span>🧱</span><div>벽돌을 다 깨면 사진 공개! 다음 사진으로</div></li>
+        <li><span>❤️</span><div>공 놓치면 ❤️ 하나, 사진 공개하면 ❤️ +1</div></li>
+      </ul>
+      <button id="btnStart" class="btn primary">시작하기</button>
+      <p id="introRecord" class="hint" hidden></p>
+      <button id="btnFilmIntro" class="btn" hidden>🎬 성장 영상 다시 보기</button>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <!-- 사진 공개 -->
+  <div id="ovReveal" hidden>
+    <div class="rv-frame">
+      <img id="rvImg" alt="">
+    </div>
+    <div id="rvCap"></div>
+    <div id="rvCount"></div>
+    <button id="btnNext" class="btn primary">다음 사진 ▶</button>
+  </div>
+
+  <!-- 일시정지 -->
+  <div id="ovPause" class="overlay" hidden>
+    <div class="card">
+      <h2>⏸ 잠깐 멈춤</h2>
+      <button id="btnResume" class="btn primary">계속 하기</button>
+      <button id="btnQuit" class="btn">처음부터</button>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <!-- 결과 -->
+  <div id="ovOver" class="overlay" hidden>
+    <div class="card result">
+      <h2 id="resTitle">게임 끝!</h2>
+      <div id="resMain" class="big-score">0</div>
+      <div id="resLabel" class="res-label">장 공개</div>
+      <div id="resBadge" class="badge" hidden>🏆 최고 기록!</div>
+      <p id="resSub" class="sub"></p>
+      <button id="btnRetry" class="btn primary">한 판 더</button>
+      <button id="btnFilmAgain" class="btn" hidden>🎬 성장 영상 다시 보기</button>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <div id="toast" hidden></div>
+  <canvas id="confetti"></canvas>
+
+  <script src="config.js"></script>
+  <script src="common.js"></script>
+  <script src="film.js"></script>
+  <script src="bricks.js"></script>
+</body>
+</html>

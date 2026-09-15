@@ -75,6 +75,8 @@ html:has(body.home) { overflow-y: auto; }
 .game-card:nth-child(3) { animation-delay: .24s; }
 .game-card:nth-child(4) { animation-delay: .36s; }
 .game-card:nth-child(5) { animation-delay: .48s; }
+.game-card:nth-child(6) { animation-delay: .6s; }
+.game-card:nth-child(7) { animation-delay: .72s; }
 .game-card:active { transform: translateY(4px); box-shadow: 0 2px 0 #f0cdd7; }
 .game-card img {
   width: 64px; height: 64px; flex: none;
