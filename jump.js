@@ -457,8 +457,8 @@
   }
 
   function openLetter() {
-    $('letterTitle').textContent = fill(CFG.letterTitle || '💌 {이름}에게');
-    $('letterBody').textContent = fill(CFG.letter || '');
+    $('letterTitle').textContent = fill(CFG.jumpLetterTitle || CFG.letterTitle || '💌 {이름}에게');
+    $('letterBody').textContent = fill(CFG.jumpLetter || CFG.letter || '');
     show('ovLetter');
     document.querySelector('#ovLetter .card').scrollTop = 0;
     confetti(160);
