@@ -158,8 +158,11 @@
   // ---------- 🎖️ 상장 ----------
   // r = { h: 층수, y, m, d }
   let certFromGame = false;
-  function showCert(r, fromGame) {
+  function showCert(rec, fromGame) {
     certFromGame = fromGame;
+    // 설정에 날짜가 있으면 그 날짜로 (예: 생일 파티 날)
+    const fixed = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(CFG.certDate || '');
+    const r = fixed ? { ...rec, y: +fixed[1], m: +fixed[2], d: +fixed[3] } : rec;
     $('certNo').textContent = `제 ${r.y}-${String(r.m).padStart(2, '0')}${String(r.d).padStart(2, '0')}-${r.h} 호`;
     $('certAward').textContent = CFG.certAward || '최고의 파티시에상';
     $('certPhoto').src = CFG.jumpFace || 'photos/stage9.jpg';
