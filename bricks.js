@@ -5,9 +5,9 @@
   const TARGET = CFG.bricksTarget || 3;
   const ALBUM = CFG.album || [];
   const W = 360;
-  const COLS = 7, GAP = 3, SIDE = 10, TOP = 96, BH = 26;
+  const COLS = 5, GAP = 4, SIDE = 10, TOP = 110, BH = 52;  // 큰 벽돌 → 한 판이 금방 끝남
   const BW = (W - SIDE * 2 - GAP * (COLS - 1)) / COLS;
-  const PADDLE_W = 84, PADDLE_H = 14, BALL_R = 7;
+  const PADDLE_W = 96, PADDLE_H = 14, BALL_R = 8;
   const MAX_LIVES = 5;
   const COLORS = ['#ff8fab', '#ffa94d', '#ffd43b', '#8ce99a', '#66d9e8', '#74c0fc', '#b197fc', '#f783ac', '#63e6be'];
 
@@ -29,7 +29,7 @@
   const ox = () => (vw - W * S) / 2;
   const sx = (x) => ox() + x * S;
   const sy = (y) => y * S;
-  const paddleY = () => HW - 86;
+  const paddleY = () => Math.min(HW - 86, 560);   // 긴 화면에서도 벽돌과 너무 멀지 않게
 
   // ---------- 상태 ----------
   let state = 'intro';   // intro | ready | play | pause | reveal | over
@@ -37,6 +37,7 @@
   let px = W / 2, targetX = W / 2;
   let lives = 3, stageInRun = 0, photoIdx = 0, rows = 8, speed = 300, hitsSincePaddle = 0, shake = 0;
   let newBest = false, filmShownThisRun = false;
+  let lastBreak = 0, stageTime = 0;
 
   function newGame() {
     lives = 3; stageInRun = 0; newBest = false; filmShownThisRun = false;
@@ -46,18 +47,18 @@
   }
 
   function startStage() {
-    rows = Math.min(10, 8 + stageInRun);
-    speed = Math.min(470, 300 + stageInRun * 28);
+    rows = stageInRun === 0 ? 4 : 5;
+    speed = Math.min(500, 420 + stageInRun * 15);
     bricks = [];
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < COLS; c++) {
-        const tough = stageInRun >= 1 && Math.random() < Math.min(0.35, 0.1 * stageInRun) && r < rows - 2;
         bricks.push({
           x: SIDE + c * (BW + GAP), y: TOP + r * (BH + GAP), w: BW, h: BH,
-          hp: tough ? 2 : 1, max: tough ? 2 : 1, c: COLORS[(r + c) % COLORS.length], alive: true, row: r,
+          hp: 1, max: 1, c: COLORS[(r + c) % COLORS.length], alive: true, row: r,
         });
       }
     }
+    lastBreak = 0; stageTime = 0;
     parts = []; texts = [];
     resetBall();
     updateHud();
@@ -98,6 +99,7 @@
     const cx = b.x + b.w / 2, cy = b.y + b.h / 2;
     if (b.hp <= 0) {
       b.alive = false;
+      lastBreak = stageTime;
       hitsSincePaddle++;
       for (let i = 0; i < 10; i++) {
         parts.push({ x: cx, y: cy, vx: (Math.random() - 0.5) * 220, vy: (Math.random() - 0.7) * 220, age: 0, c: b.c, s: 2 + Math.random() * 3 });
@@ -115,8 +117,27 @@
     if (!bricks.some((x) => x.alive)) stageClear();
   }
 
+  // 벽돌이 몇 개 안 남았는데 한참 안 맞으면, 공이 남은 벽돌 쪽으로 살짝 휘어짐
+  function assist() {
+    const dt = 1 / 180;
+    const left = bricks.filter((b) => b.alive);
+    if (left.length > 3 || stageTime - lastBreak < 4 || ball.vy > 0) return;
+    let best = null, bd = Infinity;
+    for (const b of left) {
+      const d = Math.abs(b.x + b.w / 2 - ball.x) + Math.abs(b.y + b.h / 2 - ball.y) * 0.3;
+      if (d < bd) { bd = d; best = b; }
+    }
+    const dx = best.x + best.w / 2 - ball.x;
+    const sp = Math.hypot(ball.vx, ball.vy);
+    ball.vx += Math.sign(dx) * Math.min(Math.abs(dx) * 3, 260) * dt;
+    const k = sp / Math.hypot(ball.vx, ball.vy);
+    ball.vx *= k; ball.vy *= k;
+  }
+
   function step(dt) {
     if (ball.stuck) { ball.x = px; ball.y = paddleY() - BALL_R - 1; return; }
+    stageTime += dt;
+    assist();
     const n = 3;
     for (let k = 0; k < n; k++) {
       const h = dt / n;
@@ -246,13 +267,18 @@
     ctx.restore();
 
     // 벽돌
+    const few = bricks.filter((b) => b.alive).length <= 3;
     for (const b of bricks) {
       if (!b.alive) continue;
       const x = sx(b.x), y = sy(b.y), w = b.w * S, h = b.h * S;
+      if (few) {                           // 몇 개 안 남으면 반짝여서 잘 보이게
+        ctx.shadowColor = '#fff'; ctx.shadowBlur = 10 + 8 * Math.sin(now / 150);
+      }
       ctx.fillStyle = b.hp < b.max ? b.c + 'aa' : b.c;
       ctx.beginPath();
       ctx.roundRect ? ctx.roundRect(x, y, w, h, 5 * S) : ctx.rect(x, y, w, h);
       ctx.fill();
+      ctx.shadowBlur = 0;
       ctx.fillStyle = 'rgba(255,255,255,.4)'; ctx.fillRect(x + 3 * S, y + 2 * S, w - 6 * S, h * 0.28);
       ctx.fillStyle = 'rgba(0,0,0,.12)'; ctx.fillRect(x, y + h * 0.8, w, h * 0.2);
       if (b.max > 1) {
@@ -371,6 +397,9 @@
   if (location.search.includes('debug')) {
     window.__bricks = {
       state: () => state, stage: () => stageInRun,
+      track: (off) => { targetX = ball.x + (off || 0); },
+      left: () => bricks.filter((b) => b.alive).length,
+      launch,
       clearAll: () => { bricks.forEach((b) => { b.alive = false; }); stageClear(); },
       film: () => window.Film.play(() => {}),
     };
@@ -383,6 +412,6 @@
   $('bhint').hidden = true;
   window.addEventListener('resize', resize);
   resize();
-  rows = 8; bricks = []; resetBall();
+  rows = 4; bricks = []; resetBall();
   requestAnimationFrame(frame);
 })();
