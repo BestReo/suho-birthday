@@ -10,7 +10,7 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://bestreo.github.io/suho-birthday/">
   <meta property="og:title" content="🎂 수호야, 생일 선물 도착했어!">
-  <meta property="og:description" content="5분 안에 케이크를 만들어봐">
+  <meta property="og:description" content="사진을 합쳐서 케이크를 만들어봐">
   <meta property="og:image" content="https://bestreo.github.io/suho-birthday/thumbnail.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -29,21 +29,16 @@
         <button id="btnSound" class="icon-btn" aria-label="소리 켜기/끄기">🔊</button>
       </div>
       <div class="hud-center">
-        <div id="timer">5:00</div>
+        <div id="timer">0:00</div>
         <div id="score">0점</div>
       </div>
       <div class="hud-side right">
-        <div id="nextBox" class="next">
+        <div class="next">
           <span>다음</span>
           <canvas id="nextCv" class="mini" data-size="40"></canvas>
         </div>
       </div>
     </header>
-
-    <div id="gaugeWrap" aria-label="파티 게이지">
-      <span class="g-icon">🎉</span>
-      <div id="gauge"><div id="gaugeFill"></div></div>
-    </div>
 
     <main id="stage">
       <div id="box"><canvas id="cv"></canvas></div>
@@ -57,13 +52,11 @@
     <div class="card intro">
       <canvas id="introCv" class="mini float" data-size="96"></canvas>
       <h1 id="introTitle">생일 축하해!</h1>
-      <p class="goal"><b id="introLimit">5분</b> 안에 케이크를 만들어라!</p>
+      <p class="goal">넘치기 전에 <b>케이크</b>를 만들어라!</p>
       <ul class="rules">
         <li><span>👆</span><div>좌우로 움직이고, 떼면 떨어져</div></li>
         <li><span>✨</span><div>같은 것끼리 닿으면 합체!<br>빠르게 이어가면 <b>콤보</b></div></li>
-        <li><span>🎉</span><div>게이지가 꽉 차면 <b>특수 공</b> 등장</div></li>
-        <li><span>🌈</span><div>무지개 — 아무 공에 닿으면 한 단계 업</div></li>
-        <li><span>💣</span><div>폭탄 — 주변 작은 것들 싹 날려버림</div></li>
+        <li><span>💥</span><div>점선 위로 넘치면 끝</div></li>
       </ul>
       <button id="btnStart" class="btn primary">시작하기</button>
       <p id="introRecord" class="hint" hidden></p>

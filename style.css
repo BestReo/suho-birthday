@@ -43,11 +43,11 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
   display: flex;
   flex-direction: column;
   padding:
-    max(8px, env(safe-area-inset-top))
-    max(12px, env(safe-area-inset-right))
-    max(8px, env(safe-area-inset-bottom))
-    max(12px, env(safe-area-inset-left));
-  gap: 8px;
+    max(6px, env(safe-area-inset-top))
+    max(6px, env(safe-area-inset-right))
+    max(6px, env(safe-area-inset-bottom))
+    max(6px, env(safe-area-inset-left));
+  gap: 6px;
 }
 
 /* ---------- HUD ---------- */
@@ -55,7 +55,8 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  min-height: 56px;
+  min-height: 52px;
+  padding: 0 4px;
 }
 .hud-side { display: flex; gap: 6px; }
 .hud-side.right { justify-content: flex-end; }
@@ -72,41 +73,12 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
   font-size: 36px; color: var(--pink-deep); text-shadow: 0 2px 0 #fff;
   font-variant-numeric: tabular-nums;
 }
-#timer.warn { color: #e03131; animation: beat 1s ease-in-out infinite; }
 #score { font-size: 15px; color: var(--ink-soft); margin-top: 4px; font-variant-numeric: tabular-nums; }
 .next {
   display: flex; flex-direction: column; align-items: center;
   background: rgba(255,255,255,.75);
   border-radius: 14px; padding: 4px 8px 6px;
   font-size: 12px; color: var(--ink-soft);
-  transition: box-shadow .2s;
-}
-.next.special {
-  background: #fff;
-  box-shadow: 0 0 0 3px #ffd43b, 0 0 16px 4px rgba(255,212,59,.8);
-  animation: wiggle .6s ease-in-out infinite;
-}
-
-/* ---------- 파티 게이지 ---------- */
-#gaugeWrap {
-  display: flex; align-items: center; gap: 8px;
-  padding: 0 4px;
-}
-.g-icon { font-size: 18px; line-height: 1; }
-#gauge {
-  flex: 1; height: 12px;
-  background: rgba(255,255,255,.8);
-  border-radius: 99px;
-  overflow: hidden;
-  box-shadow: inset 0 1px 2px rgba(91,58,69,.15);
-}
-#gaugeFill {
-  height: 100%; width: 0%;
-  border-radius: 99px;
-  background: linear-gradient(90deg, #ff8fab, #ffd166, #7ad3ff, #c79bff);
-  background-size: 200% 100%;
-  animation: flow 2s linear infinite;
-  transition: width .25s ease;
 }
 
 /* ---------- 게임 박스 ---------- */
@@ -119,9 +91,9 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
 }
 #box {
   position: relative;
-  border: 6px solid var(--frame);
+  border: 4px solid var(--frame);
   border-top-width: 0;
-  border-radius: 0 0 26px 26px;
+  border-radius: 0 0 22px 22px;
   background: var(--cream);
   box-shadow: 0 10px 24px rgba(232,90,134,.18), inset 0 -6px 0 rgba(247,185,201,.35);
   overflow: hidden;
@@ -376,8 +348,6 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
 }
 
 @keyframes fade { from { opacity: 0; } }
-@keyframes beat { 50% { transform: scale(1.12); } }
-@keyframes flow { to { background-position: -200% 0; } }
 @keyframes pop { from { transform: scale(.85); opacity: 0; } }
 @keyframes float { 50% { transform: translateY(-8px) rotate(-4deg); } }
 @keyframes wiggle { 50% { transform: rotate(-4deg) scale(1.06); } }

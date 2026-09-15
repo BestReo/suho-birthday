@@ -6,24 +6,20 @@
   const N = STAGES.length;
   const LAST = N - 1;
   const SPAWN = Math.min(CFG.spawnLevels || 4, LAST);
-  const TIME_LIMIT = (CFG.timeLimitSec || 300) * 1000;
   const { Engine, Bodies, Body, Composite, Events } = Matter;
 
   // ---------- 월드 / 규칙 수치 ----------
-  const W = 400, H = 680;
-  const DROP_Y = 62;          // 떨어뜨리는 높이
-  const LINE_Y = 118;         // 이 선 위로 넘친 채 OVER_MS 지나면 실패
+  const W = 360, H = 700;     // 폰 세로 화면 비율에 맞춤
+  const DROP_Y = 64;          // 떨어뜨리는 높이
+  const LINE_Y = 122;         // 이 선 위로 넘친 채 OVER_MS 지나면 실패
   const OVER_MS = 2500;
   const GRACE_MS = 1200;      // 막 떨어뜨린 공은 잠깐 봐줌
   const DROP_COOLDOWN = 420;
   const STEP = 1000 / 60;
   const TAU = Math.PI * 2;
-  const R_MIN = 14, R_MAX = 80;
+  const R_MIN = 16, R_MAX = 84;
   const COMBO_MS = 1300;      // 이 시간 안에 또 합치면 콤보
-  const SPECIAL_R = { rainbow: 19, bomb: 21 };
-  const BOMB_FUSE = 380, BOMB_RANGE = 125, BOMB_CLEAR_LVL = 2;
   const lvlRadius = (i) => R_MIN + (R_MAX - R_MIN) * Math.pow(i / LAST, 1.15);
-  const keyRadius = (k) => (typeof k === 'number' ? lvlRadius(k) : SPECIAL_R[k]);
   const EMOJI_FONT = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
 
   // ---------- 저장 ----------
@@ -58,10 +54,6 @@
   const fill = (t) => t
     .replaceAll('{이름아}', name + (hasBatchim(name) ? '아' : '야'))
     .replaceAll('{이름}', name);
-  const fmtTime = (ms) => {
-    const s = Math.max(0, Math.ceil(ms / 1000));
-    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-  };
   const fmtClear = (ms) => {
     const s = ms / 1000;
     return `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
@@ -119,35 +111,6 @@
     g.fillStyle = 'rgba(255,255,255,.5)'; g.fill();
   }
 
-  const RAINBOW = ['#ff6b6b', '#ffa94d', '#ffd43b', '#69db7c', '#4dabf7', '#9775fa'];
-  function drawSpecial(g, r, kind) {
-    if (kind === 'rainbow') {
-      RAINBOW.forEach((c, i) => {
-        g.beginPath(); g.moveTo(0, 0);
-        g.arc(0, 0, r, (i / 6) * TAU, ((i + 1) / 6) * TAU);
-        g.closePath(); g.fillStyle = c; g.fill();
-      });
-      g.beginPath(); g.arc(0, 0, r * 0.62, 0, TAU); g.fillStyle = '#fff'; g.fill();
-      g.font = `${r * 0.85}px ${EMOJI_FONT}`;
-      g.textAlign = 'center'; g.textBaseline = 'middle';
-      g.fillText('✨', 0, r * 0.06);
-      g.lineWidth = Math.max(1, r * 0.08); g.strokeStyle = '#fff';
-      g.beginPath(); g.arc(0, 0, r - g.lineWidth / 2, 0, TAU); g.stroke();
-    } else {
-      g.beginPath(); g.arc(0, 0, r, 0, TAU); g.fillStyle = '#3a3346'; g.fill();
-      g.font = `${r * 1.15}px ${EMOJI_FONT}`;
-      g.textAlign = 'center'; g.textBaseline = 'middle';
-      g.fillText('💣', 0, r * 0.1);
-      g.lineWidth = Math.max(1, r * 0.1); g.strokeStyle = '#ffd43b';
-      g.beginPath(); g.arc(0, 0, r - g.lineWidth / 2, 0, TAU); g.stroke();
-    }
-    gloss(g, r);
-  }
-
-  function drawKey(g, r, k) {
-    if (typeof k === 'number') drawBall(g, r, k); else drawSpecial(g, r, k);
-  }
-
   function drawLocked(g, r) {
     g.beginPath(); g.arc(0, 0, r, 0, TAU);
     g.fillStyle = '#f1e4e8'; g.fill();
@@ -169,26 +132,29 @@
     g.setTransform(d, 0, 0, d, 0, 0);
     g.clearRect(0, 0, size, size);
     g.translate(size / 2, size / 2);
-    if (locked) drawLocked(g, size / 2 - 1); else drawKey(g, size / 2 - 1, k);
+    if (locked) drawLocked(g, size / 2 - 1); else drawBall(g, size / 2 - 1, k);
   }
 
   // ---------- 게임 캔버스용 스프라이트 캐시 ----------
   let scale = 1, dpr = 1;
   let sprites = {};
-  function sprite(k) {
-    if (sprites[k]) return sprites[k];
-    const r = keyRadius(k), pad = 2, s = scale * dpr;
+  function sprite(lvl) {
+    if (sprites[lvl]) return sprites[lvl];
+    const r = lvlRadius(lvl), pad = 2, s = scale * dpr;
     const c = document.createElement('canvas');
     c.width = c.height = Math.ceil((r + pad) * 2 * s);
     const g = c.getContext('2d');
     g.scale(s, s); g.translate(r + pad, r + pad);
-    drawKey(g, r, k);
-    return (sprites[k] = { c, size: (r + pad) * 2 });
+    drawBall(g, r, lvl);
+    return (sprites[lvl] = { c, size: (r + pad) * 2 });
   }
 
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 3);
-    const aw = stageEl.clientWidth - 12, ah = stageEl.clientHeight - 6;
+    const box = getComputedStyle($('box'));
+    const bx = parseFloat(box.borderLeftWidth) + parseFloat(box.borderRightWidth);
+    const by = parseFloat(box.borderTopWidth) + parseFloat(box.borderBottomWidth);
+    const aw = stageEl.clientWidth - bx, ah = stageEl.clientHeight - by;
     scale = Math.max(0.1, Math.min(aw / W, ah / H));
     cv.style.width = W * scale + 'px';
     cv.style.height = H * scale + 'px';
@@ -215,17 +181,16 @@
   let pending = [];
   let gameTime = 0;
 
-  function addPiece(k, x, y, vx = 0, vy = 0) {
-    const r = keyRadius(k);
+  function addBall(lvl, x, y, vx = 0, vy = 0) {
+    const r = lvlRadius(lvl);
     const b = Bodies.circle(x, y, r, {
       restitution: 0.12, friction: 0.25, frictionStatic: 0.5,
       frictionAir: 0.006, density: 0.0012,
     });
-    const isBall = typeof k === 'number';
     b.plugin = {
-      key: k, kind: isBall ? 'ball' : k, lvl: isBall ? k : -1,
+      ball: true, lvl,
       born: gameTime, over: 0, merged: false, dead: false,
-      pop: 0, sq: 0, sqv: 0, landed: false, armedAt: 0,
+      pop: 0, sq: 0, sqv: 0, landed: false,
     };
     Body.setVelocity(b, { x: vx, y: vy });
     Composite.add(engine.world, b);
@@ -242,7 +207,7 @@
 
   function impact(b, sp) {
     const p = b.plugin;
-    if (!p || !p.kind) return;
+    if (!p || !p.ball) return;
     p.sq = Math.min(0.24, Math.max(p.sq, sp * 0.03));
     if (!p.landed) { p.landed = true; sfx.land(Math.min(1, sp / 8)); }
   }
@@ -254,22 +219,9 @@
         const sp = Math.hypot(a.velocity.x - b.velocity.x, a.velocity.y - b.velocity.y);
         if (sp > 1.2) { impact(a, sp); impact(b, sp); }
       }
-      if (pa.kind === 'bomb' && !pa.armedAt) pa.armedAt = gameTime + 1;
-      if (pb.kind === 'bomb' && !pb.armedAt) pb.armedAt = gameTime + 1;
-      if (!pa.kind || !pb.kind || pa.merged || pb.merged) continue;
-
-      if (pa.kind === 'ball' && pb.kind === 'ball') {
-        if (pa.lvl === pb.lvl) {
-          pa.merged = pb.merged = true;
-          pending.push({ t: 'merge', a, b });
-        }
-      } else if (pa.kind === 'rainbow' && pb.kind === 'ball') {
-        pa.merged = pb.merged = true;
-        pending.push({ t: 'rainbow', r: a, o: b });
-      } else if (pb.kind === 'rainbow' && pa.kind === 'ball') {
-        pa.merged = pb.merged = true;
-        pending.push({ t: 'rainbow', r: b, o: a });
-      }
+      if (!pa.ball || !pb.ball || pa.merged || pb.merged || pa.lvl !== pb.lvl) continue;
+      pa.merged = pb.merged = true;
+      pending.push([a, b]);
     }
   }
   Events.on(engine, 'collisionStart', (e) => handlePairs(e.pairs, true));
@@ -278,24 +230,14 @@
   function processPending() {
     if (!pending.length) return;
     const list = pending; pending = [];
-    for (const ev of list) {
+    for (const [a, b] of list) {
       if (state !== 'play') return;
-      if (ev.t === 'merge') {
-        const { a, b } = ev;
-        if (a.plugin.dead || b.plugin.dead) continue;
-        const x = (a.position.x + b.position.x) / 2, y = (a.position.y + b.position.y) / 2;
-        const vx = (a.velocity.x + b.velocity.x) / 2, vy = (a.velocity.y + b.velocity.y) / 2;
-        const lvl = a.plugin.lvl;
-        removeBody(a); removeBody(b);
-        levelUp(lvl, x, y, vx, vy);
-      } else {
-        const { r, o } = ev;
-        if (r.plugin.dead || o.plugin.dead) continue;
-        const { x, y } = o.position, lvl = o.plugin.lvl;
-        removeBody(r); removeBody(o);
-        rainbowFx(x, y);
-        levelUp(lvl, x, y, o.velocity.x, o.velocity.y);
-      }
+      if (a.plugin.dead || b.plugin.dead) continue;
+      const x = (a.position.x + b.position.x) / 2, y = (a.position.y + b.position.y) / 2;
+      const vx = (a.velocity.x + b.velocity.x) / 2, vy = (a.velocity.y + b.velocity.y) / 2;
+      const lvl = a.plugin.lvl;
+      removeBody(a); removeBody(b);
+      levelUp(lvl, x, y, vx, vy);
     }
   }
 
@@ -306,7 +248,7 @@
     lastMerge = gameTime;
     if (combo >= 2) comboFx = { n: combo, t: 0 };
 
-    const nb = addPiece(nl, x, y, vx, vy);
+    const nb = addBall(nl, x, y, vx, vy);
     nb.plugin.born = gameTime - GRACE_MS / 2;
     nb.plugin.pop = 1;
     nb.plugin.landed = true;
@@ -319,7 +261,6 @@
     if (nl >= 5) hitstop = Math.max(hitstop, 40 + nl * 12);
     sfx.merge(nl, combo);
     vibrate(8 + nl * 3);
-    addGauge(5 + nl * 2 + (combo - 1) * 4);
     if (nl > maxLvl) maxLvl = nl;
     discover(nl);
     if (nl === LAST) win(x, y);
@@ -337,52 +278,6 @@
     }
   }
 
-  function explode(bomb) {
-    const { x, y } = bomb.position;
-    removeBody(bomb);
-    let cleared = 0;
-    for (const o of balls.slice()) {
-      if (o.plugin.kind !== 'ball') continue;
-      const r = keyRadius(o.plugin.key);
-      const dx = o.position.x - x, dy = o.position.y - y, d = Math.hypot(dx, dy) || 1;
-      if (d > BOMB_RANGE + r) continue;
-      if (o.plugin.lvl <= BOMB_CLEAR_LVL) {
-        burst(o.position.x, o.position.y, o.plugin.lvl, 8);
-        removeBody(o);
-        cleared++;
-      } else {
-        const f = (1 - d / (BOMB_RANGE + r)) * 7 / Math.sqrt(o.plugin.lvl);
-        Body.setVelocity(o, { x: o.velocity.x + (dx / d) * f, y: o.velocity.y + (dy / d) * f * 0.6 });
-      }
-    }
-    if (cleared) addScore(cleared * 5, x, y, 1);
-    particles.push({ ring: true, x, y, r: 20, grow: BOMB_RANGE / 20, t: 0, life: 420, c: '#ff922b' });
-    for (let i = 0; i < 30; i++) {
-      const a = Math.random() * TAU, sp = 3 + Math.random() * 6;
-      particles.push({
-        x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, t: 0, life: 400 + Math.random() * 300,
-        s: 3 + Math.random() * 4, c: ['#ff922b', '#ffd43b', '#fa5252', '#fff'][i % 4], star: i % 3 === 0,
-      });
-    }
-    floats.push({ x, y: y - 10, t: 0, text: '펑!', big: true });
-    shake = Math.max(shake, 14);
-    hitstop = Math.max(hitstop, 70);
-    flash = 0.8;
-    sfx.boom();
-    vibrate(60);
-  }
-
-  function rainbowFx(x, y) {
-    for (let i = 0; i < 18; i++) {
-      const a = (i / 18) * TAU, sp = 3;
-      particles.push({
-        x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, t: 0, life: 600,
-        s: 4, c: RAINBOW[i % 6], star: true,
-      });
-    }
-    sfx.sparkle();
-  }
-
   // ---------- 게임 상태 ----------
   let state = 'intro';     // intro | play | pause | win | over
   let score = 0, dispScore = 0;
@@ -392,7 +287,6 @@
   let canDropAt = 0;
   let danger = 0;
   let combo = 0, lastMerge = -99999;
-  let gauge = 0;
   let maxLvl = 0;
   let winTime = 0;
   let lastTick = -1;
@@ -408,22 +302,8 @@
     floats.push({ x, y, t: 0, text: '+' + pts, hot: c >= 2 });
   }
 
-  function addGauge(v) {
-    if (typeof nxt !== 'number') return;   // 이미 특수 공 대기 중
-    gauge = Math.min(100, gauge + v);
-    if (gauge >= 100) {
-      gauge = 0;
-      nxt = Math.random() < 0.55 ? 'rainbow' : 'bomb';
-      paintNext();
-      toast(nxt === 'rainbow' ? '🌈 무지개 공 등장!' : '💣 폭탄 등장!');
-      sfx.sparkle();
-    }
-    $('gaugeFill').style.width = gauge + '%';
-  }
-
   function paintNext() {
     paintMini($('nextCv'), nxt);
-    $('nextBox').classList.toggle('special', typeof nxt !== 'number');
   }
 
   function discover(lvl) {
@@ -438,11 +318,10 @@
     for (const b of balls.slice()) removeBody(b);
     balls = []; pending = []; particles.length = 0; floats.length = 0;
     gameTime = 0; danger = 0; combo = 0; lastMerge = -99999;
-    gauge = 0; maxLvl = SPAWN - 1; lastTick = -1;
+    maxLvl = SPAWN - 1; lastTick = -1;
     shake = 0; hitstop = 0; flash = 0; comboFx = null;
     newBestScore = false; newBestTime = false;
     score = 0; dispScore = 0;
-    $('gaugeFill').style.width = '0%';
     cur = randLvl(); nxt = randLvl();
     aimX = W / 2;
     canDropAt = 300;
@@ -453,8 +332,8 @@
 
   function drop() {
     if (state !== 'play' || gameTime < canDropAt) return;
-    const r = keyRadius(cur);
-    const b = addPiece(cur, clampX(aimX, r), DROP_Y);
+    const r = lvlRadius(cur);
+    const b = addBall(cur, clampX(aimX, r), DROP_Y);
     Body.setVelocity(b, { x: 0, y: 2 });
     sfx.drop();
     cur = nxt; nxt = randLvl();
@@ -501,7 +380,7 @@
       $('resBadge').hidden = !newBestTime;
       $('resSub').textContent = `최단 기록 ${fmtClear(save.bestTime)} · 점수 ${score}`;
     } else {
-      $('resTitle').textContent = reason === 'time' ? '⏰ 시간 끝!' : '💥 넘쳤다!';
+      $('resTitle').textContent = '💥 넘쳤다!';
       paintMini(cvs, maxLvl);
       $('resMain').textContent = score;
       const left = LAST - maxLvl;
@@ -519,7 +398,7 @@
   function checkDanger(dt) {
     let near = false;
     for (const b of balls) {
-      const top = b.position.y - keyRadius(b.plugin.key);
+      const top = b.position.y - lvlRadius(b.plugin.lvl);
       if (gameTime - b.plugin.born < GRACE_MS) { b.plugin.over = 0; continue; }
       if (top < LINE_Y + 60) near = true;
       if (top < LINE_Y) {
@@ -530,21 +409,9 @@
     danger = near ? Math.min(1, danger + dt / 300) : Math.max(0, danger - dt / 300);
   }
 
-  function checkBombs() {
-    for (const b of balls.slice()) {
-      const p = b.plugin;
-      if (p.kind === 'bomb' && p.armedAt && gameTime - p.armedAt > BOMB_FUSE) explode(b);
-    }
-  }
-
   function updateHud() {
-    const left = TIME_LIMIT - gameTime;
-    timerEl.textContent = fmtTime(left);
-    timerEl.classList.toggle('warn', state === 'play' && left <= 30000);
-    if (state === 'play' && left <= 10000) {
-      const sec = Math.ceil(left / 1000);
-      if (sec !== lastTick) { lastTick = sec; sfx.tick(); }
-    }
+    const sec = Math.floor(gameTime / 1000);
+    if (sec !== lastTick) { lastTick = sec; timerEl.textContent = fmtClear(gameTime); }
     if (dispScore !== score) {
       dispScore += Math.max(1, Math.round((score - dispScore) * 0.2));
       if (dispScore > score) dispScore = score;
@@ -633,7 +500,7 @@
   function landingY(x, r) {
     let y = H - r;
     for (const b of balls) {
-      const rr = r + keyRadius(b.plugin.key), dx = Math.abs(b.position.x - x);
+      const rr = r + lvlRadius(b.plugin.lvl), dx = Math.abs(b.position.x - x);
       if (dx < rr) {
         const cy = b.position.y - Math.sqrt(rr * rr - dx * dx);
         if (cy < y) y = cy;
@@ -671,7 +538,7 @@
 
     // 조준선 + 떨어질 자리 + 현재 공
     if (state === 'play' || state === 'pause') {
-      const r = keyRadius(cur), x = clampX(aimX, r);
+      const r = lvlRadius(cur), x = clampX(aimX, r);
       const ready = gameTime >= canDropAt;
       const ly = landingY(x, r);
       ctx.save();
@@ -694,7 +561,7 @@
 
     // 공들
     for (const b of balls) {
-      const p = b.plugin, sp = sprite(p.key), r = keyRadius(p.key);
+      const p = b.plugin, sp = sprite(p.lvl), r = lvlRadius(p.lvl);
       let k = 1;
       if (p.pop) k = 1 - p.pop * 0.4 + Math.sin((1 - p.pop) * Math.PI) * 0.18;
       ctx.save();
@@ -702,15 +569,7 @@
       ctx.scale(k * (1 + p.sq * 0.7), k * (1 - p.sq));
       ctx.rotate(b.angle);
       if (p.over > 0) ctx.globalAlpha = 0.6 + 0.4 * Math.abs(Math.sin(now / 80));
-      if (p.kind === 'bomb' && p.armedAt) {
-        const q = (gameTime - p.armedAt) / BOMB_FUSE;
-        ctx.scale(1 + q * 0.25, 1 + q * 0.25);
-      }
       ctx.drawImage(sp.c, -sp.size / 2, -sp.size / 2, sp.size, sp.size);
-      if (p.kind === 'bomb' && p.armedAt && Math.floor(now / 60) % 2) {
-        ctx.globalAlpha = 0.5; ctx.fillStyle = '#fff';
-        ctx.beginPath(); ctx.arc(0, 0, r, 0, TAU); ctx.fill();
-      }
       ctx.restore();
     }
 
@@ -788,11 +647,9 @@
           Engine.update(engine, STEP);
           gameTime += STEP;
           processPending();
-          checkBombs();
           acc -= STEP;
         }
         if (state === 'play') checkDanger(dt);
-        if (state === 'play' && gameTime >= TIME_LIMIT) fail('time');
       }
     } else acc = 0;
     updateFx(dt);
@@ -955,9 +812,6 @@
         noise(0.05, 0.12, 2500);
         if (c >= 3) tone(f * 3, 0.12, 'sine', 0.05, 0.06);
       },
-      sparkle() { [1319, 1568, 2093].forEach((f, i) => tone(f, 0.12, 'sine', 0.06, i * 0.05)); },
-      boom() { noise(0.5, 0.5, 900); tone(110, 0.4, 'sine', 0.3, 0, 0.35); },
-      tick() { tone(1200, 0.04, 'square', 0.04); },
       page() { noise(0.18, 0.18, 4000); },
       over() { [392, 330, 262, 196].forEach((f, i) => tone(f, 0.22, 'triangle', 0.12, i * 0.14, 0.95)); },
       fanfare() { [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, 0.22, 'triangle', 0.13, i * 0.11, 1.02)); },
@@ -1121,13 +975,12 @@
 
   // ---------- 시작 ----------
   $('introTitle').textContent = fill('{이름아} 생일 축하해!');
-  $('introLimit').textContent = TIME_LIMIT % 60000 ? `${TIME_LIMIT / 1000}초` : `${TIME_LIMIT / 60000}분`;
   if (save.bestTime) {
     $('introRecord').textContent = `⚡ 최단 기록 ${fmtClear(save.bestTime)}`;
     $('introRecord').hidden = false;
   }
   document.title = fill('🎂 {이름} 생일 합치기');
-  timerEl.textContent = fmtTime(TIME_LIMIT);
+  timerEl.textContent = fmtClear(0);
   window.addEventListener('resize', resize);
   resize();
   refreshMinis();
