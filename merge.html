@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#ffe3ea">
+  <title>🍉 수호 합치기</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header id="hud">
+      <div class="hud-side">
+        <button id="btnBook" class="icon-btn" aria-label="도감">📖</button>
+        <button id="btnSound" class="icon-btn" aria-label="소리 켜기/끄기">🔊</button>
+      </div>
+      <div class="hud-center">
+        <div id="timer">0:00</div>
+        <div id="score">0점</div>
+      </div>
+      <div class="hud-side right">
+        <div class="next">
+          <span>다음</span>
+          <canvas id="nextCv" class="mini" data-size="40"></canvas>
+        </div>
+      </div>
+    </header>
+
+    <main id="stage">
+      <div id="box"><canvas id="cv"></canvas></div>
+    </main>
+
+    <footer id="evo" aria-label="진화 순서"></footer>
+  </div>
+
+  <!-- 시작 화면 -->
+  <div id="ovIntro" class="overlay">
+    <div class="card intro">
+      <canvas id="introCv" class="mini float" data-size="96"></canvas>
+      <h1 id="introTitle">생일 축하해!</h1>
+      <p class="goal">넘치기 전에 <b>케이크</b>를 만들어라!</p>
+      <ul class="rules">
+        <li><span>👆</span><div>좌우로 움직이고, 떼면 떨어져</div></li>
+        <li><span>✨</span><div>같은 것끼리 닿으면 합체!<br>빠르게 이어가면 <b>콤보</b></div></li>
+        <li><span>💥</span><div>점선 위로 넘치면 끝</div></li>
+      </ul>
+      <button id="btnStart" class="btn primary">시작하기</button>
+      <p id="introRecord" class="hint" hidden></p>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <!-- 결과 -->
+  <div id="ovOver" class="overlay" hidden>
+    <div class="card result">
+      <h2 id="resTitle">게임 끝!</h2>
+      <canvas id="resCv" class="mini" data-size="80"></canvas>
+      <div id="resMain" class="big-score">0</div>
+      <div id="resLabel" class="res-label"></div>
+      <div id="resBadge" class="badge" hidden></div>
+      <p id="resSub" class="sub"></p>
+      <button id="btnRetry" class="btn primary">한 판 더</button>
+      <button id="btnOverBook" class="btn">📖 도감 보기</button>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <!-- 도감 -->
+  <div id="ovBook" class="overlay" hidden>
+    <div class="card book">
+      <h2>📖 도감 <small id="bookCount"></small></h2>
+      <div id="bookGrid"></div>
+      <button id="btnBookClose" class="btn primary">닫기</button>
+      <button id="btnRestart" class="link-btn">처음부터 다시 하기</button>
+    </div>
+  </div>
+
+  <!-- 편지 -->
+  <div id="ovLetter" class="overlay" hidden>
+    <div class="card letter">
+      <h2 id="letterTitle"></h2>
+      <div id="letterBody"></div>
+      <button id="btnLetterClose" class="btn primary">📸 앨범 열기</button>
+    </div>
+  </div>
+
+  <!-- 앨범 -->
+  <div id="ovAlbum" class="overlay album-ov" hidden>
+    <button id="albumClose" class="album-x" aria-label="앨범 닫기">✕</button>
+    <div id="albumBook" class="album-book"></div>
+    <div class="album-nav">
+      <button id="albumPrev" class="icon-btn" aria-label="이전 장">‹</button>
+      <span id="albumPage">1 / 1</span>
+      <button id="albumNext" class="icon-btn" aria-label="다음 장">›</button>
+    </div>
+  </div>
+
+  <div id="toast" hidden></div>
+  <canvas id="confetti"></canvas>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.20.0/matter.min.js"></script>
+  <script src="config.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

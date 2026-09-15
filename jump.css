@@ -1,0 +1,72 @@
+body.jump { background: #bfe3ff; }
+
+#japp {
+  position: fixed; inset: 0;
+  display: flex; flex-direction: column;
+}
+
+#jtop {
+  position: absolute; left: 0; right: 0;
+  top: max(8px, env(safe-area-inset-top));
+  padding: 0 10px;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  z-index: 2;
+  pointer-events: none;
+}
+#jtop .icon-btn { pointer-events: auto; }
+.jscore-wrap { text-align: center; line-height: 1; }
+#jscore {
+  font-size: 56px; color: #fff;
+  text-shadow: 0 3px 0 rgba(91,58,69,.35), 0 0 12px rgba(91,58,69,.25);
+  font-variant-numeric: tabular-nums;
+}
+#jscore.pop { animation: spop .18s ease; }
+#jbest { font-size: 14px; color: #fff; opacity: .9; margin-top: 4px; text-shadow: 0 1px 2px rgba(0,0,0,.3); }
+
+#jgauge {
+  position: absolute; z-index: 2;
+  left: 50%; transform: translateX(-50%);
+  top: calc(max(8px, env(safe-area-inset-top)) + 84px);
+  width: min(70%, 320px); height: 14px;
+  background: rgba(255,255,255,.55);
+  border: 2px solid #fff;
+  border-radius: 99px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+}
+#jgaugeFill {
+  height: 100%; width: 100%;
+  border-radius: 99px;
+  background: #51cf66;
+}
+#jgauge.low { animation: shakeX .25s linear infinite; }
+
+#jcv {
+  flex: 1; min-height: 0;
+  width: 100%;
+  display: block;
+  touch-action: none;
+}
+
+#jctrl {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  padding: 10px 10px max(12px, env(safe-area-inset-bottom));
+  background: rgba(255,255,255,.35);
+}
+.jbtn {
+  height: 96px;
+  border: none; border-radius: 24px;
+  font-size: 20px; color: #fff;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  touch-action: manipulation;
+  -webkit-user-select: none; user-select: none;
+}
+.jbtn .ic { font-size: 34px; line-height: 1; }
+.jbtn.turn { background: #7aa8ff; box-shadow: 0 6px 0 #4f7fe0; }
+.jbtn.up   { background: #ff7aa2; box-shadow: 0 6px 0 #e85a86; }
+.jbtn.down { transform: translateY(5px); box-shadow: 0 1px 0 rgba(0,0,0,.2); }
+
+.jicon { font-size: 64px; line-height: 1; }
+
+@keyframes spop { 50% { transform: scale(1.18); } }
+@keyframes shakeX { 25% { margin-left: -2px; } 75% { margin-left: 2px; } }

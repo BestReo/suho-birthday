@@ -153,8 +153,9 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
 .btn.primary { background: var(--pink); color: #fff; box-shadow: 0 4px 0 var(--pink-deep); }
 .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--pink-deep); }
 .link-btn {
+  display: inline-block;
   margin-top: 14px; border: none; background: none;
-  font-size: 13px; color: var(--ink-soft); text-decoration: underline;
+  font-size: 14px; color: var(--ink-soft); text-decoration: underline;
 }
 
 .intro h1 { margin-top: 4px; }

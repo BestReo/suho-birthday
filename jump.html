@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#bfe3ff">
+  <title>🪜 수호 점프</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="jump.css">
+</head>
+<body class="jump">
+  <div id="japp">
+    <div id="jtop">
+      <button id="btnSound" class="icon-btn" aria-label="소리 켜기/끄기">🔊</button>
+      <div class="jscore-wrap">
+        <div id="jscore">0</div>
+        <div id="jbest">최고 0</div>
+      </div>
+      <button id="btnPause" class="icon-btn" aria-label="일시정지">⏸</button>
+    </div>
+    <div id="jgauge"><div id="jgaugeFill"></div></div>
+    <canvas id="jcv"></canvas>
+    <div id="jctrl">
+      <button id="btnTurn" class="jbtn turn"><span class="ic">↺</span>방향전환</button>
+      <button id="btnUp" class="jbtn up"><span class="ic">⬆</span>오르기</button>
+    </div>
+  </div>
+
+  <!-- 시작 -->
+  <div id="ovIntro" class="overlay">
+    <div class="card intro">
+      <div class="jicon float">🪜</div>
+      <h1>수호 점프</h1>
+      <p class="goal"><b id="goalN">100</b>계단 올라가면 편지가 도착해 💌</p>
+      <ul class="rules">
+        <li><span>⬆</span><div><b>오르기</b> — 보는 방향으로 한 칸</div></li>
+        <li><span>↺</span><div><b>방향전환</b> — 뒤돌면서 한 칸</div></li>
+        <li><span>⏳</span><div>위 게이지가 다 닳으면 끝!<br>올라갈수록 빨리 닳아</div></li>
+        <li><span>💥</span><div>방향 틀리면 떨어져</div></li>
+      </ul>
+      <button id="btnStart" class="btn primary">시작하기</button>
+      <p id="introRecord" class="hint" hidden></p>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <!-- 일시정지 -->
+  <div id="ovPause" class="overlay" hidden>
+    <div class="card">
+      <h2>⏸ 잠깐 멈춤</h2>
+      <button id="btnResume" class="btn primary">계속 하기</button>
+      <button id="btnQuit" class="btn">처음부터</button>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <!-- 결과 -->
+  <div id="ovOver" class="overlay" hidden>
+    <div class="card result">
+      <h2 id="resTitle">떨어졌다!</h2>
+      <div id="resMain" class="big-score">0</div>
+      <div class="res-label">계단</div>
+      <div id="resBadge" class="badge" hidden>🏆 최고 기록!</div>
+      <p id="resSub" class="sub"></p>
+      <button id="btnRetry" class="btn primary">한 번 더</button>
+      <a class="link-btn" href="./#open">🎁 선물 상자로</a>
+    </div>
+  </div>
+
+  <!-- 편지 -->
+  <div id="ovLetter" class="overlay" hidden>
+    <div class="card letter">
+      <h2 id="letterTitle"></h2>
+      <div id="letterBody"></div>
+      <button id="btnLetterClose" class="btn primary">계속 오르기 🪜</button>
+    </div>
+  </div>
+
+  <div id="toast" hidden></div>
+  <canvas id="confetti"></canvas>
+
+  <script src="config.js"></script>
+  <script src="jump.js"></script>
+</body>
+</html>

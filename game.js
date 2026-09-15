@@ -9,7 +9,10 @@
   const { Engine, Bodies, Body, Composite, Events } = Matter;
 
   // ---------- 월드 / 규칙 수치 ----------
-  const W = 360, H = 700;     // 폰 세로 화면 비율에 맞춤
+  // 통 크기는 화면 모양에 맞춰 정함 (폰 세로 = 가늘고 길게, PC/가로 = 넓게)
+  // 넓이는 비슷하게 유지해서 난이도는 거의 같음
+  let W = 360, H = 700;
+  const WORLD_AREA = 360 * 700;
   const DROP_Y = 64;          // 떨어뜨리는 높이
   const LINE_Y = 122;         // 이 선 위로 넘친 채 OVER_MS 지나면 실패
   const OVER_MS = 2500;
@@ -149,12 +152,32 @@
     return (sprites[lvl] = { c, size: (r + pad) * 2 });
   }
 
-  function resize() {
-    dpr = Math.min(window.devicePixelRatio || 1, 3);
+  function availSize() {
     const box = getComputedStyle($('box'));
     const bx = parseFloat(box.borderLeftWidth) + parseFloat(box.borderRightWidth);
     const by = parseFloat(box.borderTopWidth) + parseFloat(box.borderBottomWidth);
-    const aw = stageEl.clientWidth - bx, ah = stageEl.clientHeight - by;
+    return [stageEl.clientWidth - bx, stageEl.clientHeight - by];
+  }
+
+  // 게임 시작할 때만 통 모양을 정함 (게임 중엔 안 바뀜)
+  function pickWorld() {
+    const [aw, ah] = availSize();
+    const a = aw / Math.max(1, ah);
+    W = Math.round(Math.max(360, Math.min(600, Math.sqrt(WORLD_AREA * a))));
+    H = Math.round(Math.max(480, Math.min(720, WORLD_AREA / W)));
+    Composite.remove(engine.world, walls);
+    walls = [
+      Bodies.rectangle(W / 2, H + 50, W * 2, 100, wallOpt),
+      Bodies.rectangle(-50, H / 2 - H, 100, H * 4, wallOpt),
+      Bodies.rectangle(W + 50, H / 2 - H, 100, H * 4, wallOpt),
+    ];
+    Composite.add(engine.world, walls);
+    resize();
+  }
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 3);
+    const [aw, ah] = availSize();
     scale = Math.max(0.1, Math.min(aw / W, ah / H));
     cv.style.width = W * scale + 'px';
     cv.style.height = H * scale + 'px';
@@ -171,11 +194,7 @@
   engine.velocityIterations = 8;
 
   const wallOpt = { isStatic: true, friction: 0.3, restitution: 0.1 };
-  Composite.add(engine.world, [
-    Bodies.rectangle(W / 2, H + 50, W * 2, 100, wallOpt),
-    Bodies.rectangle(-50, H / 2 - H, 100, H * 4, wallOpt),
-    Bodies.rectangle(W + 50, H / 2 - H, 100, H * 4, wallOpt),
-  ]);
+  let walls = [];
 
   let balls = [];
   let pending = [];
@@ -322,6 +341,7 @@
     shake = 0; hitstop = 0; flash = 0; comboFx = null;
     newBestScore = false; newBestTime = false;
     score = 0; dispScore = 0;
+    pickWorld();
     cur = randLvl(); nxt = randLvl();
     aimX = W / 2;
     canDropAt = 300;
@@ -979,11 +999,18 @@
     $('introRecord').textContent = `⚡ 최단 기록 ${fmtClear(save.bestTime)}`;
     $('introRecord').hidden = false;
   }
-  document.title = fill('🎂 {이름} 생일 합치기');
+  document.title = fill('🍉 {이름} 합치기');
   timerEl.textContent = fmtClear(0);
-  window.addEventListener('resize', resize);
-  resize();
+  // 게임 중엔 크기만 다시 맞추고, 시작 전·끝난 뒤엔 통 모양도 다시 정함
+  window.addEventListener('resize', () => {
+    if (state === 'intro' || state === 'over') pickWorld(); else resize();
+  });
+  pickWorld();
   refreshMinis();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { sprites = {}; refreshMinis(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => {
+    sprites = {};
+    if (state === 'intro') pickWorld();
+    refreshMinis();
+  });
   requestAnimationFrame(frame);
 })();
