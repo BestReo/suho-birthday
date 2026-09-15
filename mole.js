@@ -289,8 +289,8 @@
       sfx.unlock();
       confetti(120);
       sfx.gold();
-      // 10초 카운트다운
-      let n = 10;
+      // 노래 전 카운트다운
+      let n = CFG.moleSongCountdown || 5;
       const tick = () => {
         if (n === 0) { sing(); return; }
         const c = $('partyCount');
